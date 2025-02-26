@@ -4,7 +4,7 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/miniIO-db
+    url: jdbc:postgresql://localhost:5432/postgres_db
     username: postgres
     password: admin
   # JPA properties
@@ -16,6 +16,18 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: update
+
+# Minio configuration
+minio:
+  access:
+    name: admin
+    secret: admin12345
+  url: http://localhost:9000/
+  bucket:
+    name: digital-driver
+
 # Server configuration
 server:
   port: 8080
