@@ -41,10 +41,7 @@ public class MinioService {
 
     public void createFolder(String folderName) {
         try {
-            System.out.println("Working 0: ");
-
             if (!checkFolderExists(folderName)) {
-                System.out.println("Working 7: ");
 
                 String normalizedFolderName = folderName.endsWith("/") ? folderName : folderName + "/";
                 minioClient.putObject(
@@ -55,11 +52,9 @@ public class MinioService {
                                 .build()
                 );
             } else {
-                System.out.println("Working 8: ");
                 throw new RuntimeException("FOLDER_ALREADY_EXISTS");
             }
         } catch (Exception e) {
-            System.out.println("Working 9: " + e.getMessage());
             throw new RuntimeException("FOLDER_CREATION_FAILED: " + e.getMessage());
         }
     }
@@ -81,9 +76,7 @@ public class MinioService {
 
     private boolean checkFolderExists(String folderName) {
         try {
-            System.out.println("Working 1");
             String normalizedFolderName = folderName.endsWith("/") ? folderName : folderName + "/";
-            System.out.println("Working 2: " + normalizedFolderName);
             Iterable<Result<Item>> results = minioClient.listObjects(
                     ListObjectsArgs.builder()
                             .bucket(bucketName)
@@ -91,19 +84,15 @@ public class MinioService {
                             .maxKeys(1)
                             .build()
             );
-            System.out.println("Working 3: " + results);
 
             for (Result<Item> result : results) {
-                System.out.println("Working 4: ");
                 if (result.get().objectName().startsWith(normalizedFolderName)) {
-                    System.out.println("Working 5: ");
                     return true;
                 }
             }
         } catch (Exception e) {
             log.error("Error checking folder existence {}: {}", folderName, e.getMessage());
         }
-        System.out.println("Working 6: ");
         return false;
     }
 
