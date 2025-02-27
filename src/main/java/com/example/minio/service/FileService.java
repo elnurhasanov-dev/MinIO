@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 import static com.example.minio.mapper.FileMapper.convert;
 import static com.example.minio.model.entity.FileType.FILE;
 import static com.example.minio.model.entity.FileType.FOLDER;
@@ -31,6 +33,10 @@ public class FileService {
     public FileDto createFolder(String folderName) {
         minioService.createFolder(folderName);
         return convert(fileRepository.save(createFolderEntity(folderName)));
+    }
+
+    public List<String> listFiles(String folder) {
+        return minioService.listFiles(folder);
     }
 
     private File createFileEntity(String fileName, MultipartFile file) {

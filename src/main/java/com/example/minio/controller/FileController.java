@@ -7,11 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -31,5 +30,10 @@ public class FileController {
     @PostMapping("/create-folder")
     public ResponseEntity<FileDto> createFolder(@RequestParam @Valid @NotBlank String folderName) {
         return ResponseEntity.status(CREATED).body(fileService.createFolder(folderName));
+    }
+
+    @GetMapping("/list/{folder}")
+    public ResponseEntity<List<String>> listFiles(@PathVariable @Valid @NotBlank String folder) {
+        return ResponseEntity.ok(fileService.listFiles(folder));
     }
 }

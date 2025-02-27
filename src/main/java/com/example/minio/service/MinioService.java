@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -59,6 +61,30 @@ public class MinioService {
         }
     }
 
+    public List<String> listFiles(String folder) {
+        List<String> fileNames = new ArrayList<>();
+
+        try {
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(folder)
+                            .recursive(true) // Brings all objects in folder/, including subfolders
+                            .build()
+            );
+
+            for (Result<Item> result : results) {
+                String objectName = result.get().objectName();
+                if (!objectName.endsWith("/")) {
+                    fileNames.add(objectName);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("FILE_LIST_FAILED");
+        }
+        return fileNames;
+    }
+
     // Helper methods
     private boolean checkFileExists(String objectName) {
         try {
@@ -95,5 +121,4 @@ public class MinioService {
         }
         return false;
     }
-
 }
