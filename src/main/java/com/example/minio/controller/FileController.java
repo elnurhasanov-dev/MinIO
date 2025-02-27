@@ -28,4 +28,8 @@ public class FileController {
         return ResponseEntity.status(CREATED).body(fileService.uploadFile(file, folderName));
     }
 
+    @PostMapping("/create-folder")
+    public ResponseEntity<FileDto> createFolder(@RequestParam @Valid @NotBlank String folderName) {
+        return ResponseEntity.status(CREATED).body(fileService.createFolder(folderName));
+    }
 }
