@@ -6,6 +6,7 @@ import com.example.minio.model.entity.FileType;
 import com.example.minio.repository.FileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,10 @@ public class FileService {
 
     public List<String> listFiles(String folder) {
         return minioService.listFiles(folder);
+    }
+
+    public String getFileUrl(String prefix, String fileName) {
+        return minioService.getUrl(prefix, fileName);
     }
 
     private File createFileEntity(String fileName, MultipartFile file) {

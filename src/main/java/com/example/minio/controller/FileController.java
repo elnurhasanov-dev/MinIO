@@ -27,6 +27,17 @@ public class FileController {
         return ResponseEntity.status(CREATED).body(fileService.uploadFile(file, folderName));
     }
 
+    @GetMapping("/list/{prefix}")
+    public ResponseEntity<List<String>> listFiles(@PathVariable @Valid @NotBlank String prefix) {
+        return ResponseEntity.ok(fileService.listFiles(prefix));
+    }
+
+    @GetMapping("/url/{prefix}/{fileName}")
+    public ResponseEntity<String> getFileUrl(@PathVariable @Valid @NotBlank String prefix,
+                                             @PathVariable @Valid @NotBlank String fileName) {
+        return ResponseEntity.ok(fileService.getFileUrl(prefix, fileName));
+    }
+
     // NOTE: MinIO does not have a folder concept. When trying to create a folder, the structure will be as follows:
     // profile_pictures/
     // If a separate file is added, it will be saved like this:
@@ -37,8 +48,4 @@ public class FileController {
         return ResponseEntity.status(CREATED).body(fileService.createFolder(folderName));
     }
 
-    @GetMapping("/list/{folder}")
-    public ResponseEntity<List<String>> listFiles(@PathVariable @Valid @NotBlank String folder) {
-        return ResponseEntity.ok(fileService.listFiles(folder));
-    }
 }

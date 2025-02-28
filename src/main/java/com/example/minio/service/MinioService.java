@@ -1,6 +1,7 @@
 package com.example.minio.service;
 
 import io.minio.*;
+import io.minio.http.Method;
 import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -43,26 +46,6 @@ public class MinioService {
         }
     }
 
-    public void createFolder(String folderName) {
-        try {
-            if (!checkFolderExists(folderName)) {
-
-                String normalizedFolderName = folderName.endsWith("/") ? folderName : folderName + "/";
-                minioClient.putObject(
-                        PutObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(normalizedFolderName)
-                                .stream(new ByteArrayInputStream(new byte[0]), 0, -1)
-                                .build()
-                );
-            } else {
-                throw new RuntimeException("FOLDER_ALREADY_EXISTS");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("FOLDER_CREATION_FAILED: " + e.getMessage());
-        }
-    }
-
     public List<String> listFiles(String folder) {
         List<String> fileNames = new ArrayList<>();
 
@@ -86,6 +69,64 @@ public class MinioService {
             throw new RuntimeException("FILE_LIST_FAILED");
         }
         return fileNames;
+    }
+
+    public String getUrl(String folder, String objectName) {
+        String objectPath = folder + "/" + objectName;
+
+        if (!checkFileExists(objectPath)) {
+            throw new RuntimeException("FILE_NOT_FOUND");
+        }
+
+        // String cacheKey = URL_CACHE_PREFIX + objectPath;
+        // String cachedUrl = redisTemplate.opsForValue().get(cacheKey);
+
+        // if (cachedUrl != null) return cachedUrl;
+
+        // String newUrl = generateUrl(folder, objectName);
+        // redisTemplate.opsForValue().set(cacheKey, newUrl, 7, TimeUnit.DAYS);
+
+        return generateUrl(folder, objectName);
+    }
+
+    public String generateUrl(String folder, String objectName) {
+        try {
+            String fullPath = folder.isEmpty() ? objectName : folder + "/" + objectName;
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(bucketName)
+                            .object(fullPath)
+                            .expiry(7, TimeUnit.DAYS)
+                            .extraQueryParams(Map.of( // The file will open in the browser (not download).
+                                    "response-content-disposition",
+                                    "attachment; filename=\"" + objectName + "\""
+                            ))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate URL", e);
+        }
+    }
+
+    public void createFolder(String folderName) {
+        try {
+            if (!checkFolderExists(folderName)) {
+
+                String normalizedFolderName = folderName.endsWith("/") ? folderName : folderName + "/";
+                minioClient.putObject(
+                        PutObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(normalizedFolderName)
+                                .stream(new ByteArrayInputStream(new byte[0]), 0, -1)
+                                .build()
+                );
+            } else {
+                throw new RuntimeException("FOLDER_ALREADY_EXISTS");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("FOLDER_CREATION_FAILED: " + e.getMessage());
+        }
     }
 
     // Helper methods
@@ -124,4 +165,5 @@ public class MinioService {
         }
         return false;
     }
+
 }
