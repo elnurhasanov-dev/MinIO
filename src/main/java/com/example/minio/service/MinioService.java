@@ -5,6 +5,7 @@ import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ public class MinioService {
     @Value("${minio.bucket.name}")
     private String bucketName;
 
+    @Async
     public void uploadFile(MultipartFile file, String folderName, String fileName) {
         try {
             String objectName = folderName + "/" + fileName;
@@ -75,6 +77,7 @@ public class MinioService {
 
             for (Result<Item> result : results) {
                 String objectName = result.get().objectName();
+                System.out.println(objectName);
                 if (!objectName.endsWith("/")) {
                     fileNames.add(objectName);
                 }

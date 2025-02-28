@@ -27,6 +27,11 @@ public class FileController {
         return ResponseEntity.status(CREATED).body(fileService.uploadFile(file, folderName));
     }
 
+    // NOTE: MinIO does not have a folder concept. When trying to create a folder, the structure will be as follows:
+    // profile_pictures/
+    // If a separate file is added, it will be saved like this:
+    // profile_pictures/FB_IMG_1563927871992.jpg, but profile_pictures/ will still remain empty.
+    // Therefore, it is better to directly add a prefix when uploading a file.
     @PostMapping("/create-folder")
     public ResponseEntity<FileDto> createFolder(@RequestParam @Valid @NotBlank String folderName) {
         return ResponseEntity.status(CREATED).body(fileService.createFolder(folderName));
