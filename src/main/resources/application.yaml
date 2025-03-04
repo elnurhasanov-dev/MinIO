@@ -26,7 +26,7 @@ minio:
     secret: admin12345
   url: http://localhost:9000/
   bucket:
-    name: digital-driver
+    name: minio-images
 
 # Server configuration
 server:

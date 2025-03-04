@@ -31,7 +31,7 @@ services:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=admin12345
     volumes:
-      - minio_data:/data
+      - minio_data:/var/lib/minio/data
     command: server /data --console-address ":9001"
     restart: unless-stopped
 

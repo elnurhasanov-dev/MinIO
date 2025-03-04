@@ -6,6 +6,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +39,23 @@ public class FileController {
     public ResponseEntity<String> getFileUrl(@PathVariable @Valid @NotBlank String prefix,
                                              @PathVariable @Valid @NotBlank String fileName) {
         return ResponseEntity.ok(fileService.getFileUrl(prefix, fileName));
+    }
+
+    @GetMapping("/download/{folder}/{fileName}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable @Valid @NotBlank String folder,
+                                                            @PathVariable @Valid @NotBlank String fileName) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(fileService.downloadFile(folder, fileName));
+    }
+
+    @GetMapping("/download-folder/{folder}")
+    public ResponseEntity<InputStreamResource> downloadFolder(@PathVariable @Valid @NotBlank String folder) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + folder + ".zip\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(fileService.downloadFolder(folder));
     }
 
     // NOTE: MinIO does not have a folder concept. When trying to create a folder, the structure will be as follows:
