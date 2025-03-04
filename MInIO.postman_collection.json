@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "ffa3b7f6-483a-46e8-a017-4b8ae2f99150",
+		"name": "MInIO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19729476"
+	},
+	"item": [
+		{
+			"name": "Upload FIle",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Dreamist/Pictures/wallpaper/Interstellar-da52756f-89a5-3ba7-9e9e-440a949d519a.jpg"
+						},
+						{
+							"key": "folderName",
+							"value": "wallpaper",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/api/files/upload",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"files",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Folder",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/files/create-folder?folderName=profile_pictures",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"files",
+						"create-folder"
+					],
+					"query": [
+						{
+							"key": "folderName",
+							"value": "profile_pictures"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Files",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/files/list/wallpaper",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"files",
+						"list",
+						"wallpaper"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get File Link",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/files/url/wallpaper/Arrival-19ee0700-3c64-4f45-8179-c1179b348ff8.jpg",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"files",
+						"url",
+						"wallpaper",
+						"Arrival-19ee0700-3c64-4f45-8179-c1179b348ff8.jpg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download Folder Zip",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/files/download-folder/wallpaper",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"files",
+						"download-folder",
+						"wallpaper"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
